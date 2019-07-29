@@ -8,10 +8,17 @@ class ParkingLot {
         this.emptySlots = size;
     }
 
-    void parkCar() throws ParkingLotFullException {
+    void park(Vehicle vehicle) throws ParkingLotFullException {
         if(emptySlots == 0){
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.emptySlots--;
+    }
+
+    void unpark(Vehicle vehicle) throws ParkingLotEmptyException {
+        if(emptySlots == totalSlots){
+            throw new ParkingLotEmptyException("No parking slot filled.");
+        }
+        this.emptySlots++;
     }
 }
