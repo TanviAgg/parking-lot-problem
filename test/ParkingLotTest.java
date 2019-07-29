@@ -1,24 +1,19 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ParkingLotTest {
     @Test
-    void shouldReturnTrueForParking(){
+    void shouldReturnTrueForParking() throws ParkingLotFullException {
         ParkingLot parkingLot = new ParkingLot(10);
 
-        boolean result = parkingLot.parkCar();
-
-        assertTrue(result);
+        parkingLot.parkCar();
     }
 
     @Test
-    void shouldReturnFalseForParking(){
-        ParkingLot parkingLot = new ParkingLot(0);
-
-        boolean result = parkingLot.parkCar();
-
-        assertFalse(result);
+    void shouldReturnFalseForParking() throws ParkingLotFullException {
+        ParkingLot parkingLot = new ParkingLot(1);
+        parkingLot.parkCar();
+        assertThrows(ParkingLotFullException.class, () -> parkingLot.parkCar());
     }
 }
