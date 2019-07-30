@@ -71,4 +71,37 @@ class ParkingLotTest {
             assertThrows(VehicleNotParkedException.class, () -> parkingLot.unpark(jeep));
         }
     }
+
+    @Nested
+    class IsParkedTest {
+        @Test
+        void shouldReturnTrueForParkedVehicle() throws AlreadyParkedException, ParkingLotFullException {
+            ParkingLot parkingLot = new ParkingLot(1);
+
+            parkingLot.park(car);
+
+            assertTrue(parkingLot.isParked(car));
+        }
+
+        @Test
+        void shouldReturnFalseForUnparkedVehicle() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
+            ParkingLot parkingLot = new ParkingLot(1);
+
+            assertFalse(parkingLot.isParked(car));
+
+            parkingLot.park(car);
+            parkingLot.unpark(car);
+
+            assertFalse(parkingLot.isParked(car));
+        }
+
+        @Test
+        void shouldReturnFalseForDifferentVehicle() throws ParkingLotFullException, AlreadyParkedException {
+            ParkingLot parkingLot = new ParkingLot(1);
+
+            parkingLot.park(car);
+
+            assertFalse(parkingLot.isParked(jeep));
+        }
+    }
 }

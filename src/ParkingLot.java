@@ -26,4 +26,8 @@ class ParkingLot {
         }
         this.parkedVehicles.remove(vehicle);
     }
+
+    boolean isParked(Vehicle vehicle) {
+        return this.parkedVehicles.contains(vehicle);
+    }
 }
