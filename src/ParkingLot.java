@@ -14,7 +14,7 @@ class ParkingLot {
         if(this.parkedVehicles.contains(vehicle)){
             throw new AlreadyParkedException("Vehicle already parked.");
         }
-        if(parkedVehicles.size() == totalSlots){
+        if(this.parkedVehicles.size() == this.totalSlots){
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.parkedVehicles.add(vehicle);
@@ -29,5 +29,9 @@ class ParkingLot {
 
     boolean isParked(Vehicle vehicle) {
         return this.parkedVehicles.contains(vehicle);
+    }
+
+    boolean isParkingLotFull(){
+        return this.parkedVehicles.size() == this.totalSlots;
     }
 }

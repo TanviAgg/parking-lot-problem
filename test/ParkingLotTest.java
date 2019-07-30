@@ -104,4 +104,25 @@ class ParkingLotTest {
             assertFalse(parkingLot.isParked(jeep));
         }
     }
+
+    @Nested
+    class IsParkingLotFullTest {
+        @Test
+        void shouldReturnTrueIfParkingLotFull() throws AlreadyParkedException, ParkingLotFullException {
+            ParkingLot parkingLot = new ParkingLot(1);
+
+            parkingLot.park(car);
+
+            assertTrue(parkingLot.isParkingLotFull());
+        }
+
+        @Test
+        void shouldReturnFalseIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException {
+            ParkingLot parkingLot = new ParkingLot(10);
+
+            parkingLot.park(car);
+
+            assertFalse(parkingLot.isParkingLotFull());
+        }
+    }
 }
