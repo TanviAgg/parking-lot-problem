@@ -1,20 +1,21 @@
 import java.util.HashSet;
+import java.util.List;
 
 // Represents a space for keeping vehicles temporarily
 class ParkingLot {
     private final int totalSlots;
     private HashSet<Vehicle> parkedVehicles;
-    private Notifiable owner;
+    private List<Notifiable> notifiables;
 
     ParkingLot(int size){
         this.totalSlots = size;
         this.parkedVehicles = new HashSet<Vehicle>();
     }
 
-    ParkingLot(int size, Notifiable owner){
+    ParkingLot(int size, List<Notifiable> notifiables){
         this.totalSlots = size;
         this.parkedVehicles = new HashSet<Vehicle>();
-        this.owner = owner;
+        this.notifiables = notifiables;
     }
 
     void park(Vehicle vehicle) throws ParkingLotFullException, AlreadyParkedException {
@@ -25,8 +26,10 @@ class ParkingLot {
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.parkedVehicles.add(vehicle);
-        if(this.parkedVehicles.size() == this.totalSlots && this.owner != null){
-            owner.notifyFull();
+        if(this.parkedVehicles.size() == this.totalSlots && this.notifiables != null){
+            for(Notifiable notifiable: notifiables){
+                notifiable.notifyFull();
+            }
         }
     }
 

@@ -1,19 +1,31 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ParkingLotTest {
     private Vehicle car;
     private Vehicle jeep;
-    private ParkingLotOwner owner;
+    private Notifiable owner1;
+    private Notifiable airportSecurity;
+    private List<Notifiable> owner = new ArrayList<>();
+    private List<Notifiable> all = new ArrayList<>();
 
     @BeforeEach
     void initialise() {
         car = new Vehicle();
         jeep = new Vehicle();
-        owner = new ParkingLotOwner();
+        owner1 = mock(Notifiable.class);
+        airportSecurity = mock(Notifiable.class);
+        owner.add(owner1);
+        all.add(owner1);
+        all.add(airportSecurity);
     }
 
     @Nested
@@ -110,29 +122,31 @@ class ParkingLotTest {
     @Nested
     class IsParkingLotFullTest {
         @Test
-        void shouldReturnTrueIfParkingLotFull() throws AlreadyParkedException, ParkingLotFullException {
+        void shouldNotifyIfParkingLotFull() throws AlreadyParkedException, ParkingLotFullException {
             ParkingLot parkingLot = new ParkingLot(1, owner);
 
             parkingLot.park(car);
 
-            assertTrue(owner.isParkingLotFull);
+            verify(owner1).notifyFull();
         }
 
         @Test
-        void shouldReturnFalseIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException {
+        void shouldNotCallIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException {
             ParkingLot parkingLot = new ParkingLot(10, owner);
 
             parkingLot.park(car);
 
-            assertFalse(owner.isParkingLotFull);
+            verify(owner1, times(0)).notifyFull();
         }
-    }
-}
 
-class ParkingLotOwner implements Notifiable {
-    boolean isParkingLotFull;
+        @Test
+        void shouldCallTwiceIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException {
+            ParkingLot parkingLot = new ParkingLot(1, all);
 
-    public void notifyFull() {
-        this.isParkingLotFull = true;
+            parkingLot.park(car);
+
+            verify(owner1, times(1)).notifyFull();
+            verify(airportSecurity, times(1)).notifyFull();
+        }
     }
 }
