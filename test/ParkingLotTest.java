@@ -33,4 +33,13 @@ class ParkingLotTest {
 
         assertThrows(ParkingLotEmptyException.class, () -> parkingLot.unpark(car));
     }
+
+    @Test
+    void shouldNotThrowAnExceptionForUnparking() throws ParkingLotFullException {
+        ParkingLot parkingLot = new ParkingLot(1);
+
+        parkingLot.park(car);
+
+        assertDoesNotThrow(() -> parkingLot.unpark(car));
+    }
 }
