@@ -4,10 +4,17 @@ import java.util.HashSet;
 class ParkingLot {
     private final int totalSlots;
     private HashSet<Vehicle> parkedVehicles;
+    private Notifiable owner;
 
     ParkingLot(int size){
         this.totalSlots = size;
         this.parkedVehicles = new HashSet<Vehicle>();
+    }
+
+    ParkingLot(int size, Notifiable owner){
+        this.totalSlots = size;
+        this.parkedVehicles = new HashSet<Vehicle>();
+        this.owner = owner;
     }
 
     void park(Vehicle vehicle) throws ParkingLotFullException, AlreadyParkedException {
@@ -18,6 +25,9 @@ class ParkingLot {
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.parkedVehicles.add(vehicle);
+        if(this.parkedVehicles.size() == this.totalSlots && this.owner != null){
+            owner.notifyFull();
+        }
     }
 
     void unpark(Vehicle vehicle) throws VehicleNotParkedException {
@@ -29,9 +39,5 @@ class ParkingLot {
 
     boolean isParked(Vehicle vehicle) {
         return this.parkedVehicles.contains(vehicle);
-    }
-
-    boolean isParkingLotFull(){
-        return this.parkedVehicles.size() == this.totalSlots;
     }
 }
