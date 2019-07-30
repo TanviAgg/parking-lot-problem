@@ -4,30 +4,30 @@ import java.util.HashSet;
 class ParkingLot {
     private final int totalSlots;
     private int emptySlots;
-    private HashSet<Vehicle> parkedCars;
+    private HashSet<Vehicle> parkedVehicles;
 
     ParkingLot(int size){
         this.totalSlots = size;
         this.emptySlots = size;
-        this.parkedCars = new HashSet<Vehicle>();
+        this.parkedVehicles = new HashSet<Vehicle>();
     }
 
     void park(Vehicle vehicle) throws ParkingLotFullException, AlreadyParkedException {
-        if(this.parkedCars.contains(vehicle)){
+        if(this.parkedVehicles.contains(vehicle)){
             throw new AlreadyParkedException("Vehicle already parked.");
         }
         if(emptySlots == 0){
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.emptySlots--;
-        this.parkedCars.add(vehicle);
+        this.parkedVehicles.add(vehicle);
     }
 
-    void unpark(Vehicle vehicle) throws ParkingLotEmptyException, VehicleNotParkedException {
-        if(!this.parkedCars.contains(vehicle)){
+    void unpark(Vehicle vehicle) throws VehicleNotParkedException {
+        if(!this.parkedVehicles.contains(vehicle)){
             throw new VehicleNotParkedException("This vehicle was not parked.");
         }
-        this.parkedCars.remove(vehicle);
+        this.parkedVehicles.remove(vehicle);
         this.emptySlots++;
     }
 }
