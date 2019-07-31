@@ -140,7 +140,7 @@ class ParkingLotTest {
         }
 
         @Test
-        void shouldCallTwiceIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException {
+        void shouldCallBothNotifiablesIfParkingLotFull() throws AlreadyParkedException, ParkingLotFullException {
             ParkingLot parkingLot = new ParkingLot(1, all);
 
             parkingLot.park(car);
@@ -153,13 +153,15 @@ class ParkingLotTest {
     @Nested
     class IsParkingLotEmptyTest {
         @Test
-        void shouldNotifyIfParkingLotBecomesEmpty() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
+        void shouldNotifyTwiceIfParkingLotBecomesEmpty() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
             ParkingLot parkingLot = new ParkingLot(1, owner);
 
             parkingLot.park(car);
             parkingLot.unpark(car);
+            parkingLot.park(car);
+            parkingLot.unpark(car);
 
-            verify(owner1).notifyEmpty();
+            verify(owner1, times(2)).notifyEmpty();
         }
 
         @Test
@@ -172,7 +174,7 @@ class ParkingLotTest {
         }
 
         @Test
-        void shouldCallTwiceIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
+        void shouldCallBothNotifiablesIfParkingLotBecomesEmpty() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
             ParkingLot parkingLot = new ParkingLot(1, all);
 
             parkingLot.park(car);
