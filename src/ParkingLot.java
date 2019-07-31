@@ -18,6 +18,10 @@ class ParkingLot {
         this.notifiables = notifiables;
     }
 
+    void addNotifiable(Notifiable notifiable){
+        this.notifiables.add(notifiable);
+    }
+
     void park(Vehicle vehicle) throws ParkingLotFullException, AlreadyParkedException {
         if(this.parkedVehicles.contains(vehicle)){
             throw new AlreadyParkedException("Vehicle already parked.");
@@ -28,12 +32,12 @@ class ParkingLot {
         this.parkedVehicles.add(vehicle);
         if(isFull() && this.notifiables != null){
             for(Notifiable notifiable: notifiables){
-                notifiable.notifyFull();
+                notifiable.notifyFull(this);
             }
         }
     }
 
-    boolean isFull(){
+    private boolean isFull(){
         return this.parkedVehicles.size() == this.totalSlots;
     }
 
@@ -44,7 +48,7 @@ class ParkingLot {
         this.parkedVehicles.remove(vehicle);
         if(this.parkedVehicles.size() == this.totalSlots - 1 && this.notifiables != null){
             for(Notifiable notifiable: notifiables){
-                notifiable.notifyEmpty();
+                notifiable.notifyEmpty(this);
             }
         }
     }

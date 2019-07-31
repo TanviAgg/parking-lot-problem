@@ -128,7 +128,7 @@ class ParkingLotTest {
 
             parkingLot.park(car);
 
-            verify(owner1).notifyFull();
+            verify(owner1).notifyFull(parkingLot);
         }
 
         @Test
@@ -137,7 +137,7 @@ class ParkingLotTest {
 
             parkingLot.park(car);
 
-            verify(owner1, times(0)).notifyFull();
+            verify(owner1, times(0)).notifyFull(parkingLot);
         }
 
         @Test
@@ -146,8 +146,8 @@ class ParkingLotTest {
 
             parkingLot.park(car);
 
-            verify(owner1, times(1)).notifyFull();
-            verify(airportSecurity, times(1)).notifyFull();
+            verify(owner1, times(1)).notifyFull(parkingLot);
+            verify(airportSecurity, times(1)).notifyFull(parkingLot);
         }
     }
 
@@ -162,7 +162,7 @@ class ParkingLotTest {
             parkingLot.park(car);
             parkingLot.unpark(car);
 
-            verify(owner1, times(2)).notifyEmpty();
+            verify(owner1, times(2)).notifyEmpty(parkingLot);
         }
 
         @Test
@@ -171,7 +171,7 @@ class ParkingLotTest {
 
             parkingLot.park(car);
 
-            verify(owner1, times(0)).notifyEmpty();
+            verify(owner1, times(0)).notifyEmpty(parkingLot);
         }
 
         @Test
@@ -181,8 +181,8 @@ class ParkingLotTest {
             parkingLot.park(car);
             parkingLot.unpark(car);
 
-            verify(owner1, times(1)).notifyEmpty();
-            verify(airportSecurity, times(1)).notifyEmpty();
+            verify(owner1, times(1)).notifyEmpty(parkingLot);
+            verify(airportSecurity, times(1)).notifyEmpty(parkingLot);
         }
     }
 }

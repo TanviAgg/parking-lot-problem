@@ -1,12 +1,18 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 // Represents an entity that can park/unpark vehicles in its parkinglot
-class ParkingLotAttendant {
+class ParkingLotAttendant implements Notifiable{
     private List<ParkingLot> parkingLots;
+    private HashMap<ParkingLot, Boolean> availabityOfParkingLot;
 
     ParkingLotAttendant(List<ParkingLot> parkingLots) {
         this.parkingLots = parkingLots;
+        this.availabityOfParkingLot = new HashMap<>();
+        for(ParkingLot parkingLot: parkingLots){
+            availabityOfParkingLot.put(parkingLot, true);
+        }
     }
 
     void valetPark(Vehicle vehicle) throws UnableToParkException{
@@ -14,7 +20,7 @@ class ParkingLotAttendant {
             if (parkingLot.isParked(vehicle)) {
                 throw new UnableToParkException();
             }
-            if (parkingLot.isFull()) {
+            if (!this.availabityOfParkingLot.get(parkingLot)) {
                 continue;
             }
             try {
@@ -42,5 +48,15 @@ class ParkingLotAttendant {
             }
         }
         throw new UnableToUnparkException();
+    }
+
+    @Override
+    public void notifyFull(ParkingLot parkingLot) {
+        this.availabityOfParkingLot.replace(parkingLot, false);
+    }
+
+    @Override
+    public void notifyEmpty(ParkingLot parkingLot) {
+        this.availabityOfParkingLot.replace(parkingLot, true);
     }
 }

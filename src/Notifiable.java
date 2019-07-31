@@ -1,4 +1,4 @@
 interface Notifiable {
-    void notifyFull();
-    void notifyEmpty();
+    void notifyFull(ParkingLot parkingLot);
+    void notifyEmpty(ParkingLot parkingLot);
 }
