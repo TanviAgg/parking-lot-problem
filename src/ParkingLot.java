@@ -26,11 +26,15 @@ class ParkingLot {
             throw new ParkingLotFullException("No parking slot available.");
         }
         this.parkedVehicles.add(vehicle);
-        if(this.parkedVehicles.size() == this.totalSlots && this.notifiables != null){
+        if(isFull() && this.notifiables != null){
             for(Notifiable notifiable: notifiables){
                 notifiable.notifyFull();
             }
         }
+    }
+
+    boolean isFull(){
+        return this.parkedVehicles.size() == this.totalSlots;
     }
 
     void unpark(Vehicle vehicle) throws VehicleNotParkedException {
