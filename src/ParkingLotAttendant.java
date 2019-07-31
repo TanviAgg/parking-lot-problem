@@ -1,18 +1,25 @@
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 // Represents an entity that can park/unpark vehicles in its parkinglot
 class ParkingLotAttendant implements Notifiable{
     private List<ParkingLot> parkingLots;
-    private HashMap<ParkingLot, Boolean> availabityOfParkingLot;
+    private HashSet<ParkingLot> availableParkingLots;
 
     ParkingLotAttendant(List<ParkingLot> parkingLots) {
         this.parkingLots = parkingLots;
-        this.availabityOfParkingLot = new HashMap<>();
+        this.availableParkingLots = new HashSet<>();
         for(ParkingLot parkingLot: parkingLots){
-            availabityOfParkingLot.put(parkingLot, true);
+            parkingLot.addNotifiable(this);
+            availableParkingLots.add(parkingLot);
         }
+    }
+
+    void assignParkingLot(ParkingLot parkingLot){
+        this.parkingLots.add(parkingLot);
+        parkingLot.addNotifiable(this);
+        this.availableParkingLots.add(parkingLot);
     }
 
     void valetPark(Vehicle vehicle) throws UnableToParkException{
@@ -20,9 +27,8 @@ class ParkingLotAttendant implements Notifiable{
             if (parkingLot.isParked(vehicle)) {
                 throw new UnableToParkException();
             }
-            if (!this.availabityOfParkingLot.get(parkingLot)) {
-                continue;
-            }
+        }
+        for (ParkingLot parkingLot : availableParkingLots) {
             try {
                 parkingLot.park(vehicle);
                 return;
@@ -36,15 +42,14 @@ class ParkingLotAttendant implements Notifiable{
 
     void valetUnpark(Vehicle vehicle) throws UnableToUnparkException {
         for (ParkingLot parkingLot : parkingLots) {
-            if (!parkingLot.isParked(vehicle)) {
-                continue;
-            }
-            try {
-                parkingLot.unpark(vehicle);
-                return;
-            }
-            catch(Exception e) {
-                throw new UnableToUnparkException();
+            if (parkingLot.isParked(vehicle)) {
+                try {
+                    parkingLot.unpark(vehicle);
+                    return;
+                }
+                catch(Exception e) {
+                    throw new UnableToUnparkException();
+                }
             }
         }
         throw new UnableToUnparkException();
@@ -52,11 +57,11 @@ class ParkingLotAttendant implements Notifiable{
 
     @Override
     public void notifyFull(ParkingLot parkingLot) {
-        this.availabityOfParkingLot.replace(parkingLot, false);
+        this.availableParkingLots.remove(parkingLot);
     }
 
     @Override
     public void notifyEmpty(ParkingLot parkingLot) {
-        this.availabityOfParkingLot.replace(parkingLot, true);
+        this.availableParkingLots.add(parkingLot);
     }
 }

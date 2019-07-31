@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,8 @@ class ParkingLotAttendantTest {
     private List<Notifiable> all = new ArrayList<>();
     private ParkingLotAttendant attendant;
     private List<ParkingLot> parkingLots;
-    private ParkingLot parkingLot1 = new ParkingLot(1, owner);
-    private ParkingLot parkingLot2 = new ParkingLot(1, owner);
+    private ParkingLot lotWithSize1 = new ParkingLot(1, owner);
+    private ParkingLot otherLotWithSize1 = new ParkingLot(1, owner);
 
     @BeforeEach
     void initialise() {
@@ -31,37 +30,34 @@ class ParkingLotAttendantTest {
         all.add(owner1);
         all.add(airportSecurity);
         parkingLots = new ArrayList<ParkingLot>();
-        parkingLot1 = new ParkingLot(1, owner);
-        parkingLot2 = new ParkingLot(1, owner);
+        lotWithSize1 = new ParkingLot(1, owner);
+        otherLotWithSize1 = new ParkingLot(1, owner);
     }
 
     @Nested
     class AttendantParkingTest {
         @Test
         void shouldParkSuccessfully(){
-            parkingLots.add(parkingLot1);
+            parkingLots.add(lotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
-            parkingLot1.addNotifiable(attendant);
 
             assertDoesNotThrow(() -> attendant.valetPark(car));
         }
 
         @Test
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
-            parkingLots.add(parkingLot1);
+            parkingLots.add(lotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
-            parkingLot1.addNotifiable(attendant);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
         }
 
         @Test
         void shouldThrowVehicleNotParkedExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
-            parkingLots.add(parkingLot1);
+            parkingLots.add(lotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
-            parkingLot1.addNotifiable(attendant);
 
             assertThrows(UnableToUnparkException.class, () -> attendant.valetUnpark(jeep));
         }
@@ -71,11 +67,9 @@ class ParkingLotAttendantTest {
     class MultipleParkingLotsTest {
         @Test
         void shouldParkSuccessfully() throws UnableToParkException {
-            parkingLots.add(parkingLot1);
-            parkingLots.add(parkingLot2);
+            parkingLots.add(lotWithSize1);
+            parkingLots.add(otherLotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
-            parkingLot1.addNotifiable(attendant);
-            parkingLot2.addNotifiable(attendant);
 
             attendant.valetPark(car);
 
@@ -84,24 +78,20 @@ class ParkingLotAttendantTest {
 
         @Test
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
-            parkingLots.add(parkingLot1);
-            parkingLots.add(parkingLot2);
+            parkingLots.add(lotWithSize1);
+            parkingLots.add(otherLotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
-            parkingLot1.addNotifiable(attendant);
-            parkingLot2.addNotifiable(attendant);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
         }
 
         @Test
         void shouldThrowUnableToParkExceptionForParkingSameCar() throws UnableToUnparkException, UnableToParkException {
-            parkingLots.add(parkingLot1);
-            parkingLots.add(parkingLot2);
+            parkingLots.add(lotWithSize1);
+            parkingLots.add(otherLotWithSize1);
             attendant = new ParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
-            parkingLot1.addNotifiable(attendant);
-            parkingLot2.addNotifiable(attendant);
 
             assertThrows(UnableToParkException.class, () -> attendant.valetPark(car));
         }
