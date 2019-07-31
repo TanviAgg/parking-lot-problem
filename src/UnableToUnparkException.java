@@ -1,0 +1,2 @@
+class UnableToUnparkException extends Exception {
+}
