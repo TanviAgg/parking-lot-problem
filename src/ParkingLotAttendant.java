@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 
 // Represents an entity that can park/unpark vehicles in its parkinglot
 class ParkingLotAttendant implements Notifiable{

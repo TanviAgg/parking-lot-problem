@@ -1,8 +1,9 @@
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 
 // Represents a space for keeping vehicles temporarily
-class ParkingLot {
+class ParkingLot implements Comparable<ParkingLot>{
     private final int totalSlots;
     private HashSet<Vehicle> parkedVehicles;
     private List<Notifiable> notifiables;
@@ -55,5 +56,11 @@ class ParkingLot {
 
     boolean isParked(Vehicle vehicle) {
         return this.parkedVehicles.contains(vehicle);
+    }
+
+
+    @Override
+    public int compareTo(ParkingLot other) {
+        return (this.totalSlots - this.parkedVehicles.size()) - (other.totalSlots - other.parkedVehicles.size());
     }
 }
