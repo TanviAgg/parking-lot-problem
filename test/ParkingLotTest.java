@@ -149,4 +149,37 @@ class ParkingLotTest {
             verify(airportSecurity, times(1)).notifyFull();
         }
     }
+
+    @Nested
+    class IsParkingLotEmptyTest {
+        @Test
+        void shouldNotifyIfParkingLotBecomesEmpty() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
+            ParkingLot parkingLot = new ParkingLot(1, owner);
+
+            parkingLot.park(car);
+            parkingLot.unpark(car);
+
+            verify(owner1).notifyEmpty();
+        }
+
+        @Test
+        void shouldNotCallIfParkingLotNotEmpty() throws AlreadyParkedException, ParkingLotFullException {
+            ParkingLot parkingLot = new ParkingLot(10, owner);
+
+            parkingLot.park(car);
+
+            verify(owner1, times(0)).notifyEmpty();
+        }
+
+        @Test
+        void shouldCallTwiceIfParkingLotNotFull() throws AlreadyParkedException, ParkingLotFullException, VehicleNotParkedException {
+            ParkingLot parkingLot = new ParkingLot(1, all);
+
+            parkingLot.park(car);
+            parkingLot.unpark(car);
+
+            verify(owner1, times(1)).notifyEmpty();
+            verify(airportSecurity, times(1)).notifyEmpty();
+        }
+    }
 }

@@ -38,6 +38,11 @@ class ParkingLot {
             throw new VehicleNotParkedException("This vehicle was not parked.");
         }
         this.parkedVehicles.remove(vehicle);
+        if(this.parkedVehicles.size() == this.totalSlots - 1 && this.notifiables != null){
+            for(Notifiable notifiable: notifiables){
+                notifiable.notifyEmpty();
+            }
+        }
     }
 
     boolean isParked(Vehicle vehicle) {
