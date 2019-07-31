@@ -16,6 +16,7 @@ class ParkingLotTest {
     private Notifiable airportSecurity;
     private List<Notifiable> owner = new ArrayList<>();
     private List<Notifiable> all = new ArrayList<>();
+    private ParkingLotAttendant attendant;
 
     @BeforeEach
     void initialise() {
@@ -182,6 +183,36 @@ class ParkingLotTest {
 
             verify(owner1, times(1)).notifyEmpty();
             verify(airportSecurity, times(1)).notifyEmpty();
+        }
+    }
+
+    @Nested
+    class AttendantParkingTest {
+        @Test
+        void shouldParkSuccessfully(){
+            ParkingLot parkingLot = new ParkingLot(1, owner);
+            attendant = new ParkingLotAttendant(parkingLot);
+
+            assertDoesNotThrow(() -> attendant.valetPark(car));
+        }
+
+        @Test
+        void shouldNotThrowAnExceptionForUnparking() throws ParkingLotFullException, AlreadyParkedException {
+            ParkingLot parkingLot = new ParkingLot(1, owner);
+            attendant = new ParkingLotAttendant(parkingLot);
+            attendant.valetPark(car);
+
+            assertDoesNotThrow(() -> attendant.valetUnpark(car));
+        }
+
+        @Test
+        void shouldThrowVehicleNotParkedExceptionForUnparking() throws ParkingLotFullException,
+                VehicleNotParkedException, AlreadyParkedException {
+            ParkingLot parkingLot = new ParkingLot(1, owner);
+            attendant = new ParkingLotAttendant(parkingLot);
+            attendant.valetPark(car);
+
+            assertThrows(VehicleNotParkedException.class, () -> attendant.valetUnpark(jeep));
         }
     }
 }
