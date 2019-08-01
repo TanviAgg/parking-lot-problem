@@ -17,9 +17,9 @@ class ParkingLotAttendantTest {
     private List<Notifiable> all = new ArrayList<>();
     private ParkingLotAttendant attendant;
     private List<ParkingLot> parkingLots;
-    private ParkingLot lotWithSize1 = new ParkingLot(1, owner);
-    private ParkingLot otherLotWithSize1 = new ParkingLot(1, owner);
-    private ParkingLot lotWithSize2 = new ParkingLot(1, owner);
+    private ParkingLot lotWithSize1;
+    private ParkingLot otherLotWithSize1;
+    private ParkingLot lotWithSize2;
 
     @BeforeEach
     void initialise() {
