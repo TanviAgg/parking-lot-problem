@@ -19,6 +19,7 @@ class ParkingLotAttendantTest {
     private List<ParkingLot> parkingLots;
     private ParkingLot lotWithSize1 = new ParkingLot(1, owner);
     private ParkingLot otherLotWithSize1 = new ParkingLot(1, owner);
+    private ParkingLot lotWithSize2 = new ParkingLot(1, owner);
 
     @BeforeEach
     void initialise() {
@@ -32,6 +33,7 @@ class ParkingLotAttendantTest {
         parkingLots = new ArrayList<ParkingLot>();
         lotWithSize1 = new ParkingLot(1, owner);
         otherLotWithSize1 = new ParkingLot(1, owner);
+        lotWithSize2 = new ParkingLot(2, owner);
     }
 
     @Nested
@@ -39,7 +41,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldParkSuccessfully(){
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
 
             assertDoesNotThrow(() -> attendant.valetPark(car));
         }
@@ -47,7 +49,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
@@ -56,7 +58,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldThrowVehicleNotParkedExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
 
             assertThrows(UnableToUnparkException.class, () -> attendant.valetUnpark(jeep));
@@ -64,12 +66,12 @@ class ParkingLotAttendantTest {
     }
 
     @Nested
-    class MultipleParkingLotsTest {
+    class SequentialParkingTest {
         @Test
         void shouldParkSuccessfully() throws UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
 
             attendant.valetPark(car);
 
@@ -80,7 +82,7 @@ class ParkingLotAttendantTest {
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
@@ -90,10 +92,24 @@ class ParkingLotAttendantTest {
         void shouldThrowUnableToParkExceptionForParkingSameCar() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots);
+            attendant = new SequentialParkingLotAttendant(parkingLots);
             attendant.valetPark(car);
 
             assertThrows(UnableToParkException.class, () -> attendant.valetPark(car));
+        }
+    }
+
+    @Nested
+    class DistributedParkingTest {
+        @Test
+        void shouldParkInLotWithMoreAvailableSlots() throws UnableToParkException {
+            parkingLots.add(lotWithSize1);
+            parkingLots.add(lotWithSize2);
+            attendant = new DistributedParkingLotAttendant(parkingLots);
+
+            attendant.valetPark(car);
+
+            assertTrue(lotWithSize2.isParked(car));
         }
     }
 }
