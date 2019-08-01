@@ -4,16 +4,28 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 // Represents an entity that can park/unpark vehicles in its parkinglot
-abstract class ParkingLotAttendant implements Notifiable {
-    protected List<ParkingLot> parkingLots;
+class ParkingLotAttendant implements Notifiable {
+    private List<ParkingLot> parkingLots;
     protected HashSet<ParkingLot> availableParkingLots;
+    private ParkingStrategy parkingStrategy;
 
-    ParkingLotAttendant(List<ParkingLot> parkingLots) {
+    enum Strategy{
+        SEQUENTIAL,
+        DISTRIBUTED
+    }
+
+    ParkingLotAttendant(List<ParkingLot> parkingLots, Strategy strategy) {
         this.parkingLots = parkingLots;
         this.availableParkingLots = new HashSet<>();
         for (ParkingLot parkingLot : parkingLots) {
             parkingLot.addNotifiable(this);
             availableParkingLots.add(parkingLot);
+        }
+        if(strategy == Strategy.SEQUENTIAL){
+            this.parkingStrategy = new SequentialParkingStrategy();
+        }
+        if(strategy == Strategy.DISTRIBUTED){
+            this.parkingStrategy = new DistributedParkingStrategy();
         }
     }
 
@@ -30,8 +42,7 @@ abstract class ParkingLotAttendant implements Notifiable {
             }
         }
         try {
-            this.getNextParkingLot().park(vehicle);
-            return;
+            this.parkingStrategy.getNextParkingLot(this).park(vehicle);
         } catch (Exception e) {
             throw new UnableToParkException();
         }
@@ -50,8 +61,6 @@ abstract class ParkingLotAttendant implements Notifiable {
         }
         throw new UnableToUnparkException();
     }
-
-    abstract ParkingLot getNextParkingLot();
 
     @Override
     public void notifyFull(ParkingLot parkingLot) {
