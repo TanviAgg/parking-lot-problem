@@ -1,36 +1,20 @@
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.PriorityQueue;
 
 // Represents an entity that can park/unpark vehicles in its parkinglot
 class ParkingLotAttendant implements Notifiable {
     private List<ParkingLot> parkingLots;
-    protected HashSet<ParkingLot> availableParkingLots;
+    private HashSet<ParkingLot> availableParkingLots;
     private ParkingStrategy parkingStrategy;
 
-    enum Strategy{
-        SEQUENTIAL,
-        DISTRIBUTED
-    }
-
-    ParkingLotAttendant(List<ParkingLot> parkingLots, Strategy strategy) {
+    ParkingLotAttendant(List<ParkingLot> parkingLots, ParkingStrategy strategy) {
         this.parkingLots = parkingLots;
         this.availableParkingLots = new HashSet<>();
         for (ParkingLot parkingLot : parkingLots) {
             parkingLot.addNotifiable(this);
             availableParkingLots.add(parkingLot);
         }
-        this.setParkingStrategy(strategy);
-    }
-
-    private void setParkingStrategy(Strategy strategy){
-        if(strategy == Strategy.SEQUENTIAL){
-            this.parkingStrategy = new SequentialParkingStrategy();
-        }
-        if(strategy == Strategy.DISTRIBUTED){
-            this.parkingStrategy = new DistributedParkingStrategy();
-        }
+        this.parkingStrategy = strategy;
     }
 
     void assignParkingLot(ParkingLot parkingLot) {
@@ -46,7 +30,7 @@ class ParkingLotAttendant implements Notifiable {
             }
         }
         try {
-            this.parkingStrategy.getNextParkingLot(this).park(vehicle);
+            this.parkingStrategy.chooseFrom(this.availableParkingLots).park(vehicle);
         } catch (Exception e) {
             throw new UnableToParkException();
         }

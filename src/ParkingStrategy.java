@@ -1,3 +1,5 @@
+import java.util.HashSet;
+
 interface ParkingStrategy {
-    ParkingLot getNextParkingLot(ParkingLotAttendant attendant);
+    ParkingLot chooseFrom(HashSet<ParkingLot> parkingLots);
 }

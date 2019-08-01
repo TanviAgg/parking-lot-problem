@@ -1,5 +1,7 @@
+import java.util.HashSet;
+
 class SequentialParkingStrategy implements ParkingStrategy {
-    public ParkingLot getNextParkingLot(ParkingLotAttendant attendant) {
-        return attendant.availableParkingLots.iterator().next();
+    public ParkingLot chooseFrom(HashSet<ParkingLot> availableParkingLots) {
+        return availableParkingLots.iterator().next();
     }
 }

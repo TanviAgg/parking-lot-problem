@@ -20,6 +20,8 @@ class ParkingLotAttendantTest {
     private ParkingLot lotWithSize1;
     private ParkingLot otherLotWithSize1;
     private ParkingLot lotWithSize2;
+    private ParkingStrategy sequentialStrategy;
+    private ParkingStrategy distributedStrategy;
 
     @BeforeEach
     void initialise() {
@@ -34,6 +36,8 @@ class ParkingLotAttendantTest {
         lotWithSize1 = new ParkingLot(1, owner);
         otherLotWithSize1 = new ParkingLot(1, owner);
         lotWithSize2 = new ParkingLot(2, owner);
+        sequentialStrategy = new SequentialParkingStrategy();
+        distributedStrategy = new DistributedParkingStrategy();
     }
 
     @Nested
@@ -41,7 +45,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldParkSuccessfully(){
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
 
             assertDoesNotThrow(() -> attendant.valetPark(car));
         }
@@ -49,7 +53,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
             attendant.valetPark(car);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
@@ -58,7 +62,7 @@ class ParkingLotAttendantTest {
         @Test
         void shouldThrowVehicleNotParkedExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
             attendant.valetPark(car);
 
             assertThrows(UnableToUnparkException.class, () -> attendant.valetUnpark(jeep));
@@ -71,7 +75,7 @@ class ParkingLotAttendantTest {
         void shouldParkSuccessfully() throws UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
 
             attendant.valetPark(car);
 
@@ -82,7 +86,7 @@ class ParkingLotAttendantTest {
         void shouldNotThrowAnExceptionForUnparking() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
             attendant.valetPark(car);
 
             assertDoesNotThrow(() -> attendant.valetUnpark(car));
@@ -92,7 +96,7 @@ class ParkingLotAttendantTest {
         void shouldThrowUnableToParkExceptionForParkingSameCar() throws UnableToUnparkException, UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(otherLotWithSize1);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.SEQUENTIAL);
+            attendant = new ParkingLotAttendant(parkingLots, sequentialStrategy);
             attendant.valetPark(car);
 
             assertThrows(UnableToParkException.class, () -> attendant.valetPark(car));
@@ -105,7 +109,7 @@ class ParkingLotAttendantTest {
         void shouldParkInLotWithMoreAvailableSlots() throws UnableToParkException {
             parkingLots.add(lotWithSize1);
             parkingLots.add(lotWithSize2);
-            attendant = new ParkingLotAttendant(parkingLots, ParkingLotAttendant.Strategy.DISTRIBUTED);
+            attendant = new ParkingLotAttendant(parkingLots, distributedStrategy);
 
             attendant.valetPark(car);
 
