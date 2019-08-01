@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 // Represents an entity that can park/unpark vehicles in its parkinglot
 class ParkingLotAttendant implements Notifiable {
     private List<ParkingLot> parkingLots;
-    protected HashSet<ParkingLot> availableParkingLots;
+    private HashSet<ParkingLot> availableParkingLots;
     private ParkingStrategy parkingStrategy;
 
     enum Strategy{
@@ -21,6 +21,10 @@ class ParkingLotAttendant implements Notifiable {
             parkingLot.addNotifiable(this);
             availableParkingLots.add(parkingLot);
         }
+        this.setParkingStrategy(strategy);
+    }
+
+    private void setParkingStrategy(Strategy strategy){
         if(strategy == Strategy.SEQUENTIAL){
             this.parkingStrategy = new SequentialParkingStrategy();
         }
@@ -60,6 +64,14 @@ class ParkingLotAttendant implements Notifiable {
             }
         }
         throw new UnableToUnparkException();
+    }
+
+    protected HashSet<ParkingLot> availableParkingLots(){
+        HashSet<ParkingLot> lots = new HashSet<ParkingLot>();
+        for(ParkingLot parkingLot: availableParkingLots){
+            lots.add(parkingLot);
+        }
+        return lots;
     }
 
     @Override
